@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+mangadownloader = {editable = true, path = "."}
+psycopg2-binary = "*"
+bs4 = "*"
+requests = "*"
+configparser = "*"
+selenium = "*"
+manga-downloader = {editable = true, path = "."}
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"
