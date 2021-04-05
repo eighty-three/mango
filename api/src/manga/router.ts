@@ -5,13 +5,13 @@ const router = express.Router();
 import * as manga from './controller';
 import * as mangaSchema from './schema';
 
+router.get('/series/random',
+  manga.getRandomSeries
+);
+
 router.get('/series/:id',
   validator(mangaSchema.getSeries, 'params'),
   manga.getSeries
-);
-
-router.get('/series/random',
-  manga.getRandomSeries
 );
 
 router.post('/series/search/title',
