@@ -1,0 +1,77 @@
+CREATE EXTENSION citext;
+CREATE EXTENSION pg_trgm;
+CREATE EXTENSION intarray;
+
+// For manga in the scheduler, should probably name it differently
+CREATE TABLE manga (
+  series_id SERIAL PRIMARY KEY,
+  name CITEXT NOT NULL,
+  latest REAL NOT NULL,
+  scraper CITEXT NOT NULL,
+  link CITEXT
+);
+
+CREATE TABLE series(
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  author INT [] NOT NULL,
+  artist INT [] NOT NULL,
+  tags INT [],
+  md_id INT NOT NULL UNIQUE,
+  mu_id INT,
+  mal_id INT,
+  language TEXT NOT NULL,
+  pub_status TEXT NOT NULL,
+  notes TEXT
+);
+CREATE INDEX idx_series_languages ON series(language);
+CREATE INDEX idx_series_pub_status ON series(language);
+CREATE INDEX idx_series_author ON series USING GIN (author gin__int_ops);
+CREATE INDEX idx_series_artist ON series USING GIN (artist gin__int_ops);
+
+CREATE TABLE authors (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
+);
+CREATE INDEX idx_authors_name ON authors USING GIN (name gin_trgm_ops);
+
+CREATE TABLE artists (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
+);
+CREATE INDEX idx_artists_name ON artists USING GIN (name gin_trgm_ops);
+
+CREATE TABLE tags (
+  id SERIAL PRIMARY KEY,
+  tag TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE titles (
+  id SERIAL PRIMARY KEY,
+  md_id INT NOT NULL,
+  name TEXT NOT NULL
+);
+CREATE INDEX idx_titles_md_id ON titles(md_id);
+CREATE INDEX idx_titles_name ON titles USING GIN (name gin_trgm_ops);
+
+CREATE TABLE relations (
+  relation_id SERIAL PRIMARY KEY,
+  id INT NOT NULL,
+  parent_id INT REFERENCES series(md_id) NOT NULL,
+  title CITEXT NOT NULL,
+  type INT NOT NULL
+);
+CREATE INDEX idx_relations_parent_id ON relations(parent_id);
+
+CREATE TABLE authors_series (
+  id INT REFERENCES authors(id) NOT NULL,
+  md_id INT REFERENCES series(md_id) NOT NULL,
+  PRIMARY KEY (id, md_id)
+);
+
+CREATE TABLE artists_series (
+  id INT REFERENCES artists(id) NOT NULL,
+  md_id INT REFERENCES series(md_id) NOT NULL,
+  PRIMARY KEY (id, md_id)
+);
