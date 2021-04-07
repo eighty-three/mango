@@ -31,13 +31,15 @@
     "next": "^10.0.9",
     "next-plugin-preact": "^3.0.3",
     "nprogress": "^0.2.0",
+    "polished": "^4.1.1",
     "preact": "^10.5.11",
     "preact-render-to-string": "^5.1.12",
     "prop-types": "^15.7.2",
     "react": "npm:@preact/compat@0.0.4",
     "react-dom": "npm:@preact/compat@0.0.4",
     "react-hook-form": "^6.15.5",
-    "sass": "^1.32.8"
+    "sass": "^1.32.8",
+    "styled-components": "^5.2.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.10",
