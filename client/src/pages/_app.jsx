@@ -1,6 +1,7 @@
-import '../styles/global.css';
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import '@/styles/global.css';
 
 const propTypes = {
   Component: PropTypes.elementType,
