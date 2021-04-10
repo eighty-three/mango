@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 
-import styles from './index.module.css';
+import styles from './index.module.scss';
 import Navbar from '@/components/Navbar';
 
 export const siteTitle = 'Mango';
