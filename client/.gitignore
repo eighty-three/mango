@@ -3,4 +3,4 @@
 /.next/
 .env
 /coverage/
-/public/images/covers/placeholder.png
+/public/images/covers/
