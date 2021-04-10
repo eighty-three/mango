@@ -58,7 +58,7 @@ CREATE INDEX idx_titles_name ON titles USING GIN (name gin_trgm_ops);
 CREATE TABLE relations (
   relation_id SERIAL PRIMARY KEY,
   id INT NOT NULL,
-  parent_id INT REFERENCES series(md_id) NOT NULL,
+  parent_id INT REFERENCES series(md_id) ON DELETE CASCADE NOT NULL,
   title CITEXT NOT NULL,
   type INT NOT NULL
 );
@@ -66,12 +66,12 @@ CREATE INDEX idx_relations_parent_id ON relations(parent_id);
 
 CREATE TABLE authors_series (
   id INT REFERENCES authors(id) NOT NULL,
-  md_id INT REFERENCES series(md_id) NOT NULL,
+  md_id INT REFERENCES series(md_id) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY (id, md_id)
 );
 
 CREATE TABLE artists_series (
   id INT REFERENCES artists(id) NOT NULL,
-  md_id INT REFERENCES series(md_id) NOT NULL,
+  md_id INT REFERENCES series(md_id) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY (id, md_id)
 );
