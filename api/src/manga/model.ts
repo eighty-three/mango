@@ -1,5 +1,6 @@
 import db from '@utils/db';
 import { PreparedStatement as PS, QueryParam } from 'pg-promise';
+import { nanoid } from 'nanoid';
 
 import {
   ISeries,
@@ -7,9 +8,11 @@ import {
   ISearchOutput,
   IRelation,
   TLanguage,
-  TPublicationStatus
+  TPublicationStatus,
+  TReadingStatus,
+  TDownloadStatus,
 } from './types';
-import { sanitize, pubStatus } from './utils';
+import { pubStatus } from './utils';
 
 export const getSeries = async (
   id: string
@@ -17,7 +20,8 @@ export const getSeries = async (
   const query = new PS({ name: 'get-series', text: '\
     SELECT s.title, s.description, s.tags,\
            s.md_id, s.mu_id, s.mal_id,\
-           s.language, s.pub_status, s.notes,\
+           s.language, s.publication, s.reading,\
+           s.downloaded, s.from_md, s.notes,\
            ar.artist_names, au.author_names, at.alt_titles, r.relations\
     FROM series s \
     INNER JOIN (\
@@ -80,13 +84,17 @@ export const searchTitle = async (
   return await db.manyOrNone(query);
 };
 
+
 // No tags yet, waiting for MD to be back up
 export const searchMetadata = async (
   title: string,
   author: string,
   artist: string,
   language: TLanguage,
-  pub_status: TPublicationStatus
+  publication: TPublicationStatus,
+  reading: TReadingStatus,
+  downloaded: TDownloadStatus,
+  from_md: boolean
 ): Promise<ISearchOutput[]> => {
   let num = 1;
   let first = true;
@@ -142,17 +150,53 @@ export const searchMetadata = async (
     num++;
   }
 
-  if (pub_status) {
+  if (publication) {
     checkIfFirst(first);
-    queryValues.push(pub_status);
+    queryValues.push(publication);
 
-    conditions += ` s.pub_status = $${num}`;
+    conditions += ` s.publication = $${num}`;
+    num++;
+  }
+
+  if (reading) {
+    checkIfFirst(first);
+
+    if (downloaded === 'null') {
+      conditions += ' s.reading is NULL';
+    } else {
+      conditions += ` s.reading = $${num}`;
+
+      queryValues.push(reading);
+      num++;
+    }
+  }
+
+  if (downloaded) {
+    checkIfFirst(first);
+
+    if (downloaded === 'null') {
+      conditions += ' s.downloaded is NULL';
+    } else {
+      conditions += ` s.downloaded = $${num}`;
+
+      queryValues.push(reading);
+      num++;
+    }
+  }
+
+  if (from_md || from_md === false) {
+    checkIfFirst(first);
+    queryValues.push(from_md);
+
+    conditions += ` s.from_md = $${num}`;
+    num++;
   }
 
   if (first) {
     queryText = 'SELECT md_id, title, description FROM series';
     groupByText = '';
   }
+
 
   /* Example fixedText:
    * SELECT DISTINCT s.md_id, s.title, s.description FROM series s
@@ -165,8 +209,11 @@ export const searchMetadata = async (
    * 	   AND au.name ~* $2
    * 	   AND at.name ~* $3
    * 	   AND s.language = $4
-   * 	   AND s.pub_status = $5
-   * 	 GROUP BY s.md_id, s.title;
+   * 	   AND s.publication = $5
+   * 	   AND s.reading = $6
+   * 	   AND s.downloaded = $7
+   * 	   AND s.from_md = $8
+   * 	 GROUP BY s.md_id, s.title, s.description;
    */
   const fixedText = queryText + joins + conditions + groupByText;
 
@@ -177,8 +224,7 @@ export const searchMetadata = async (
    * Probably because the query text is composed differently
    * but the name stays the same.
    */
-
-  const PSname = `${title} ${artist} ${author} ${language} ${pub_status}`;
+  const PSname = nanoid(10);
   const query = new PS({ name: `search-metadata-${PSname}`, text: fixedText, values: queryValues });
   return await db.manyOrNone(query);
 };
@@ -195,12 +241,14 @@ export const addSeries = async (
   const mu_id = Number(metadata.links?.mu) || 0;
   const mal_id = Number(metadata.links?.mal) || 0;
   const language = metadata.publication.language;
-  const pub_status = pubStatus(metadata.publication.status);
+  const publication = pubStatus(metadata.publication.status);
 
   const authors = metadata.author;
   const artists = metadata.artist;
   const altTitles = metadata.altTitles;
   altTitles.push(title);
+
+  const altTitlesArr = [...new Set(altTitles)];
   const relations = metadata.relations;
 
   await db.tx(async t => {
@@ -219,18 +267,18 @@ export const addSeries = async (
     const query = new PS({ name: 'add-series', text: '\
       INSERT INTO series (\
         title, description, author, artist, tags,\
-        md_id, mu_id, mal_id, language, pub_status)\
+        md_id, mu_id, mal_id, language, publication)\
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)'
     });
     query.values = [
       title, description, author_ids, artist_ids, tags,
-      md_id, mu_id, mal_id, language, pub_status
+      md_id, mu_id, mal_id, language, publication
     ];
 
     await t.none(query);
 
     await t.batch(
-      altTitles.map((altTitle) => t.none(altTitleQuery(md_id, altTitle)))
+      altTitlesArr.map((altTitle) => t.none(altTitleQuery(md_id, altTitle)))
     );
 
     // Tags are from MD, creating a new row for tags isn't necessary (I think?)
