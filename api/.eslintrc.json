@@ -53,6 +53,7 @@
         "@typescript-eslint/no-empty-interface": [
             "off"
         ],
-        "no-trailing-spaces": ["error"]
+        "no-trailing-spaces": ["error"],
+        "@typescript-eslint/no-explicit-any": "off"
     }
 }
