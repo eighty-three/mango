@@ -34,13 +34,16 @@ export const searchTitle: RequestHandler = async (req, res) => {
 
 export const searchMetadata: RequestHandler = async (req, res) => {
   try {
-    const { title, author, artist, language, pub_status } = req.body;
+    const { title, author, artist, language, publication, reading, downloaded, from_md } = req.body;
     const series = await manga.searchMetadata(
       sanitize(title),
       sanitize(author),
       sanitize(artist),
       language,
-      pub_status
+      publication,
+      reading,
+      downloaded,
+      from_md
     );
 
     res.status(200).json(series);

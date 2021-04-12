@@ -9,15 +9,15 @@ export const pubStatus = (
 ): string => { // Fix when MD is back up
   switch (num) {
     case 1:
-      return 'Ongoing';
+      return 'ongoing';
     case 2:
-      return 'Complete';
+      return 'complete';
     case 3:
-      return 'Cancelled';
+      return 'cancelled';
     case 4:
-      return 'Hiatus';
+      return 'hiatus';
 
     default:
-      return 'Ongoing';
+      return 'ongoing';
   }
 };

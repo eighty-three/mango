@@ -48,5 +48,7 @@ export interface ISearchOutput {
   id: number
 }
 
-export type TLanguage = 'jp' | 'gb' | 'cn' | 'kr' | '';
-export type TPublicationStatus = 'Ongoing' | 'Complete' | 'Hiatus' | 'Cancelled' | '';
+export type TLanguage = 'jp' | 'gb' | 'cn' | 'kr' | 'hk';
+export type TPublicationStatus = 'ongoing' | 'complete' | 'hiatus' | 'cancelled';
+export type TReadingStatus = 'dropped' | 'completed' | 'reading' | 'null';
+export type TDownloadStatus = 'complete' | 'incomplete' | 'none' | 'null';
