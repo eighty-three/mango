@@ -5,4 +5,7 @@ const router = express.Router();
 import mangaRouter from './manga/router';
 router.use('/manga', mangaRouter);
 
+import metadataRouter from './metadata/router';
+router.use('/metadata', metadataRouter);
+
 export default router;
