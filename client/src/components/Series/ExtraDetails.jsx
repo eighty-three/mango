@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { darken } from 'polished';
 
-import { HeaderText, Text, TextWrap } from './styles';
+import { HeaderText, Text, TextWrap, Button } from './styles';
 
 const propTypes = {
   description: PropTypes.string,
@@ -31,7 +30,7 @@ const ExtraDetails = (props) => {
   return (
     <>
       <hr />
-      <ToggleButton onClick={onClick}>{buttonState.text}</ToggleButton>
+      <Button onClick={onClick}>{buttonState.text}</Button>
       <ExtraDetailsContainer hide={buttonState.hide}>
         <Text>
           <HeaderText>Publication Status:{' '}</HeaderText>
@@ -63,32 +62,6 @@ const ExtraDetails = (props) => {
     </>
   );
 };
-
-const ToggleButton = styled.button`
-  width: 100%;
-  height: 45px;
-  
-  margin-top: 0.5em;
-
-  cursor: pointer;
-  background-color: transparent;
-
-  border-radius: 2px;
-  border: thin solid rgb(220, 220, 220);
-  outline: 0;
-
-  font-size: 1em;
-  font-weight: bold;
-  color: gray;
-
-  &:hover, &:focus {
-    background-color: rgb(220, 220, 220);
-  }
-
-  &:active {
-    background-color: ${darken(0.2, 'rgb(220, 220, 220)')};
-  }
-`;
 
 const ExtraDetailsContainer = styled.div`
   display: ${props => props.hide ? 'none' : 'block'};
