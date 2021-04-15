@@ -1,12 +1,12 @@
 import React from 'react';
-import Head from 'next/head';
 import PropTypes from 'prop-types';
+import Head from 'next/head';
+import fs from 'fs';
 
 import Layout from '@/components/Layout';
 import SeriesComponent from '@/components/Series';
 
 import { getSeries } from '@/lib/manga';
-import { getImage } from '@/lib/image';
 
 const propTypes = {
   data: PropTypes.shape({
@@ -44,7 +44,6 @@ const Series = (props) => {
   const {
     data
   } = props;
-
   const title = data.error ? data.error : data.title;
 
   return (
@@ -63,7 +62,11 @@ const Series = (props) => {
 export const getServerSideProps = async (ctx) => {
   const id = ctx.params.series;
   const data = await getSeries(id);
-  const image = (await getImage(id) === 200) ? String(id) : 'placeholder';
+  if (data.error) return { props: { data: { error: data.error }}};
+
+  const imagePath = './public/images/covers'; // hardcoded
+  const imageFile = `${imagePath}/${id}.png`;
+  const image = (fs.existsSync(imageFile)) ? String(id) : 'placeholder';
 
   return {
     props: {
