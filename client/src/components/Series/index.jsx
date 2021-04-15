@@ -126,7 +126,9 @@ const SeriesComponent = (props) => {
           {String(downloaded)}
         </Text>
 
-        <Notes notes={notes} id={md_id} />
+        <hr />
+        <HeaderText>Notes:</HeaderText>
+        <Notes notes={notes} md_id={md_id} />
 
         <ExtraDetails
           publication={publication}

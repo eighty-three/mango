@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { useForm } from 'react-hook-form';
 
-import { HeaderText, Button } from './styles';
+import { Button } from './styles';
 
 import { updateNotes } from '@/lib/metadata';
 import useButton from '@/hooks/useButton';
@@ -44,34 +44,23 @@ const Notes = (props) => {
   };
 
   return (
-    <>
-      <hr />
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Header>
-          <HeaderText>Notes:</HeaderText>
-          <SubmitButton type={'submit'} disabled={buttonState.disabled} onBlur={revertText}>
-            {buttonState.text}
-          </SubmitButton>
-        </Header>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <SubmitButton type={'submit'} disabled={buttonState.disabled} onBlur={revertText}>
+        {buttonState.text}
+      </SubmitButton>
 
-        <TextArea
-          value={notesState}
-          spellCheck={'false'}
-          placeholder={'Write some notes'}
-          aria-describedby={'notes'}
-          id={'notes'}
-          name={'notes'}
-          ref={register({ required: false })}
-        />
-      </form>
-    </>
+      <TextArea
+        value={notesState}
+        spellCheck={'false'}
+        placeholder={'Write some notes'}
+        aria-describedby={'notes'}
+        id={'notes'}
+        name={'notes'}
+        ref={register({ required: false })}
+      />
+    </form>
   );
 };
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-`;
 
 const ifDisabled = css`
   color: white;
@@ -91,8 +80,7 @@ const ifDisabled = css`
 
 const SubmitButton = styled(Button)`
   height: 30px;
-  margin: 0.5em;
-  margin-right: 0;
+  margin: 0.5em 0;
   ${props => props.disabled ? ifDisabled : ''};
 
   font-size: 0.8em;
