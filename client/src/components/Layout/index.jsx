@@ -28,6 +28,7 @@ const Layout = (props) => {
           name='description'
           content={siteTitle}
         />
+        <title>{siteTitle}</title>
       </Head>
 
       {/* Contents */}
