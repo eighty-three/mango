@@ -10,13 +10,13 @@ import useButton from '@/hooks/useButton';
 
 const propTypes = {
   notes: PropTypes.string,
-  id: PropTypes.number
+  md_id: PropTypes.number
 };
 
 const Notes = (props) => {
   const {
     notes,
-    id
+    md_id
   } = props;
 
   const [notesState, setNotes] = useState('');
@@ -27,7 +27,7 @@ const Notes = (props) => {
 
   useLayoutEffect(() => {
     setNotes(notes);
-  }, [id]);
+  }, [md_id]);
 
   const revertText = () => setButtonState({ ...buttonState, text: initialButtonText });
 
@@ -35,7 +35,7 @@ const Notes = (props) => {
     if (data.notes !== notesState) {
       setNotes(data.notes);
       setButtonState({ text: 'Updating...', disabled: true });
-      const req = await updateNotes(id, data.notes);
+      const req = await updateNotes(md_id, data.notes);
 
       (req.error)
         ? setButtonState({ text: req.error, disabled: true })
