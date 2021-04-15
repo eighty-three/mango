@@ -1,5 +1,5 @@
 import sys, time, re
-from manga_downloader.scraper.sites import gosu, manganelo, hatigarm, skscans, hmanhwa, webtoonxyz
+from manga_downloader.scraper.sites import gosu, manganelo, hatigarm, skscans, hmanhwa, webtoonxyz, reaperscans
 
 supported_sites = {
     'gosu': {
@@ -25,5 +25,9 @@ supported_sites = {
     'manganelo': {
         'site': 'manganelo.com',
         'scraper': manganelo
+    },
+    'reaperscans': {
+        'site': 'reaperscans.com',
+        'scraper': reaperscans
     }
 }
