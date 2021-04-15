@@ -1,6 +1,6 @@
 // Taken from MDN
 export const sanitize = (str: string|null): string =>
-  (!str|| typeof str !== 'string')
+  (!str || typeof str !== 'string')
     ? ''
     : str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
