@@ -97,13 +97,17 @@ export const searchMetadata = async (
   from_md: boolean,
   offset: number
 ): Promise<ISearchOutput[]> => {
-  let num = 1;
-  let first = true;
+  const queryText = 'SELECT s.md_id, s.title, s.description FROM series s';
+  const queryValues = [];
   let joins = '';
   let conditions = '';
-  const queryValues = [];
-  let queryText = 'SELECT DISTINCT s.md_id, s.title, s.description FROM series s';
-  let groupByText = ' GROUP BY s.md_id, s.title, s.description';
+  let filterTitles = '';
+  let groupByText = `
+    GROUP BY s.md_id, s.title, s.description
+  `;
+
+  let first = true;
+  let num = 1;
 
   const checkIfFirst = (check: boolean): void => {
     if (check) {
@@ -115,11 +119,20 @@ export const searchMetadata = async (
   };
 
   if (title) {
-    checkIfFirst(first);
+    first = false;
     queryValues.push(title);
 
-    joins += ' INNER JOIN titles t ON t.md_id = s.md_id';
-    conditions += ` t.name ~* $${num}`;
+    filterTitles = `
+      WHERE EXISTS (
+        SELECT FROM (
+          SELECT s1.md_id FROM series s1
+            INNER JOIN titles t ON t.md_id = s1.md_id
+	        WHERE t.name ~* $${num}
+        ) AS sub
+        WHERE sub.md_id = s.md_id
+      )
+    `;
+
     num++;
   }
 
@@ -207,19 +220,27 @@ export const searchMetadata = async (
   }
 
   if (first) {
-    queryText = 'SELECT md_id, title, description FROM series';
     groupByText = '';
   }
 
+  const orderText = `
+    ORDER BY s.md_id ASC OFFSET $${num} LIMIT 100
+  `;
 
   /* Example fixedText:
-   * SELECT DISTINCT s.md_id, s.title, s.description FROM series s
-   *   INNER JOIN titles t ON t.md_id = s.md_id
-   * 	 INNER JOIN authors_series aur ON aur.md_id = s.md_id
-   * 	 INNER JOIN authors au ON au.id = aur.id
-   * 	 INNER JOIN artists_series atr ON atr.md_id = s.md_id
-   * 	 INNER JOIN artists at ON at.id = atr.id
-   * 	 WHERE t.name ~* $1
+   * SELECT s.md_id, s.title, s.description FROM series s
+   *     INNER JOIN authors_series aur ON aur.md_id = s.md_id
+   *     INNER JOIN authors au ON au.id = aur.id
+   * 	   INNER JOIN artists_series atr ON atr.md_id = s.md_id
+   * 	   INNER JOIN artists at ON at.id = atr.id
+   *   WHERE EXISTS (
+   *     SELECT FROM (
+   *       SELECT s1.md_id FROM series s1
+   *         INNER JOIN titles t ON t.md_id = s1.md_id
+	 *       WHERE t.name ~* $1
+   *     ) AS sub
+   *     WHERE sub.md_id = s.md_id
+   *   )
    * 	   AND au.name ~* $2
    * 	   AND at.name ~* $3
    * 	   AND s.language = $4
@@ -227,9 +248,11 @@ export const searchMetadata = async (
    * 	   AND s.reading = $6
    * 	   AND s.downloaded = $7
    * 	   AND s.from_md = $8
-   * 	 GROUP BY s.md_id, s.title, s.description;
-   */
-  const fixedText = queryText + joins + conditions + groupByText;
+   * GROUP BY s.md_id, s.title, s.description
+   * ORDER BY s.md_id DESC OFFSET $9 LIMIT 100
+   **/
+  const fixedText = queryText + joins + filterTitles + conditions + groupByText + orderText;
+  queryValues.push(offset * 100);
 
   /* Not including the `PSname` string will return the error:
    *  Error: Prepared statements must be unique -
