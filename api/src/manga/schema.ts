@@ -22,4 +22,5 @@ export const searchMetadata = Joi.object({
   reading: Joi.string().valid(...reading),
   downloaded: Joi.string().valid(...downloaded),
   from_md: Joi.boolean(),
+  page: Joi.number(),
 });
