@@ -94,7 +94,8 @@ export const searchMetadata = async (
   publication: TPublicationStatus,
   reading: TReadingStatus,
   downloaded: TDownloadStatus,
-  from_md: boolean
+  from_md: boolean,
+  offset: number
 ): Promise<ISearchOutput[]> => {
   let num = 1;
   let first = true;
