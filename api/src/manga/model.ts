@@ -127,9 +127,12 @@ export const searchMetadata = async (
     checkIfFirst(first);
     queryValues.push(author);
 
-    joins += ' INNER JOIN authors_series aur ON aur.md_id = s.md_id\
-                  INNER JOIN authors au ON au.id = aur.id';
-    conditions += ` au.name ~* $${num}`;
+    joins += `
+      INNER JOIN authors_series aur ON aur.md_id = s.md_id
+      INNER JOIN authors au ON au.id = aur.id
+    `;
+    conditions += ` au.name ~* $${num}
+    `;
     num++;
   }
 
@@ -137,9 +140,12 @@ export const searchMetadata = async (
     checkIfFirst(first);
     queryValues.push(artist);
 
-    joins += ' INNER JOIN artists_series atr ON atr.md_id = s.md_id\
-                  INNER JOIN artists at ON at.id = atr.id';
-    conditions += ` at.name ~* $${num}`;
+    joins += `
+      INNER JOIN artists_series atr ON atr.md_id = s.md_id
+      INNER JOIN artists at ON at.id = atr.id
+    `;
+    conditions += ` at.name ~* $${num}
+    `;
     num++;
   }
 
@@ -147,7 +153,8 @@ export const searchMetadata = async (
     checkIfFirst(first);
     queryValues.push(language);
 
-    conditions += ` s.language = $${num}`;
+    conditions += ` s.language = $${num}
+    `;
     num++;
   }
 
@@ -155,7 +162,8 @@ export const searchMetadata = async (
     checkIfFirst(first);
     queryValues.push(publication);
 
-    conditions += ` s.publication = $${num}`;
+    conditions += ` s.publication = $${num}
+    `;
     num++;
   }
 
@@ -163,9 +171,11 @@ export const searchMetadata = async (
     checkIfFirst(first);
 
     if (downloaded === 'null') {
-      conditions += ' s.reading is NULL';
+      conditions += ` s.reading is NULL
+      `;
     } else {
-      conditions += ` s.reading = $${num}`;
+      conditions += ` s.reading = $${num}
+      `;
 
       queryValues.push(reading);
       num++;
@@ -176,9 +186,11 @@ export const searchMetadata = async (
     checkIfFirst(first);
 
     if (downloaded === 'null') {
-      conditions += ' s.downloaded is NULL';
+      conditions += ` s.downloaded is NULL
+      `;
     } else {
-      conditions += ` s.downloaded = $${num}`;
+      conditions += ` s.downloaded = $${num}
+      `;
 
       queryValues.push(reading);
       num++;
@@ -189,7 +201,8 @@ export const searchMetadata = async (
     checkIfFirst(first);
     queryValues.push(from_md);
 
-    conditions += ` s.from_md = $${num}`;
+    conditions += ` s.from_md = $${num}
+    `;
     num++;
   }
 
