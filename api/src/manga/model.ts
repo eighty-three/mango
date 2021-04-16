@@ -224,7 +224,7 @@ export const searchMetadata = async (
   }
 
   const orderText = `
-    ORDER BY s.md_id ASC OFFSET $${num} LIMIT 100
+    ORDER BY s.md_id ASC OFFSET $${num} LIMIT 101
   `;
 
   /* Example fixedText:
@@ -249,7 +249,7 @@ export const searchMetadata = async (
    * 	   AND s.downloaded = $7
    * 	   AND s.from_md = $8
    * GROUP BY s.md_id, s.title, s.description
-   * ORDER BY s.md_id DESC OFFSET $9 LIMIT 100
+   * ORDER BY s.md_id DESC OFFSET $9 LIMIT 101
    **/
   const fixedText = queryText + joins + filterTitles + conditions + groupByText + orderText;
   queryValues.push(offset * 100);
