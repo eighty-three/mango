@@ -23,7 +23,7 @@ const Layout = (props) => {
     <div className={styles.container}>
       {/* Meta Tags */}
       <Head>
-        <link rel='icon' href='/favicon.png' />
+        <link rel='icon' href='data:;base64,=' />
         <meta
           name='description'
           content={siteTitle}
