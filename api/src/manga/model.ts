@@ -224,7 +224,7 @@ export const searchMetadata = async (
   }
 
   const orderText = `
-    ORDER BY s.md_id ASC OFFSET $${num} LIMIT 101
+    ORDER BY s.md_id DESC OFFSET $${num} LIMIT 101
   `;
 
   /* Example fixedText:
