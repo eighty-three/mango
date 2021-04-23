@@ -53,9 +53,9 @@ def chapter_downloader(s, url, chapter_path, shortened):
     main_div = content.select_one('div.container-chapter-reader')
     images = main_div.select('img')
 
-    for image in images:
+    for idx, image in enumerate(images, start=1):
         link = str(image['src'])
-        filename = link.rsplit('/', 1)[1]
+        filename = str(idx).zfill(3) + '.jpg'
         dl_path = chapter_path / filename
         shortened_path = shortened / filename
 
