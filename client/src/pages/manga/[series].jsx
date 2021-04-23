@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
-import fs from 'fs';
 
 import Layout from '@/components/Layout';
 import SeriesComponent from '@/components/Series';
@@ -58,15 +57,14 @@ const Series = (props) => {
     </Layout>
   );
 };
+import { checkImage } from '@/lib/image';
 
 export const getServerSideProps = async (ctx) => {
   const id = ctx.params.series;
   const data = await getSeries(id);
   if (data.error) return { props: { data: { error: data.error }}};
 
-  const imagePath = './public/images/covers'; // hardcoded
-  const imageFile = `${imagePath}/${id}.png`;
-  const image = (fs.existsSync(imageFile)) ? String(id) : 'placeholder';
+  const image = checkImage(id);
 
   return {
     props: {
