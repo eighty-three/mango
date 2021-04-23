@@ -46,6 +46,10 @@ export const searchMetadata: RequestHandler = async (req, res) => {
       page
     } = req.body;
 
+    const offset = (Number(page) - 1 <= 0)
+      ? 0
+      : (Number(page) - 1);
+
     const series = await manga.searchMetadata(
       sanitize(title),
       sanitize(author),
@@ -55,7 +59,7 @@ export const searchMetadata: RequestHandler = async (req, res) => {
       reading,
       downloaded,
       from_md,
-      page
+      offset
     );
 
     res.status(200).json(series);
