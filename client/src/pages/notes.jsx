@@ -54,20 +54,16 @@ const Series = (props) => {
 };
 
 const Container = styled.div`
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 
-  @media (max-width: 800px) { 
-    flex-flow: column;
+  @media (max-width: 450px) { 
+    display: block;
   }
 `;
 
 const Wrapper = styled.div`
-  width: 50%;
-
-  @media (max-width: 800px) { 
-    width: 100%;
-  }
+  width: 100%;
 `;
 
 const NotesContainer = styled.div`
@@ -83,10 +79,6 @@ const NotesContainer = styled.div`
   &:hover {
     border: 2px solid ${colors.sub};
   }
-
-  @media (max-width: 800px) { 
-    margin: 0.5em 0;
-  }
 `;
 
 const Title = styled.a`
@@ -99,6 +91,7 @@ const Title = styled.a`
 
   font-size: 1em;
   font-weight: bold;
+  color: black;
 
   &:visited {
     color: black;
@@ -106,7 +99,6 @@ const Title = styled.a`
 
   &:hover {
     color: ${darken(0.6, colors.sub)};
-    text-decoration: none;
   }
 `;
 
