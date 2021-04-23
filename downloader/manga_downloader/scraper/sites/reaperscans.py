@@ -46,7 +46,6 @@ def chapter_downloader(s, url, chapter_path, shortened):
 
     for idx, raw_link in enumerate(image_links, start=1):
         link = raw_link.replace('\\', '')
-
         filename = str(idx).zfill(3) + '.jpg'
         dl_path = chapter_path / filename
         shortened_path = shortened / filename
